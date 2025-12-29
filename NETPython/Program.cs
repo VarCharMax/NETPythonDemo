@@ -9,7 +9,7 @@ namespace NETPython
     static void Main(string[] args)
     {
       //Highest Python version compatible with compatible is currently 3.13.
-      const string pyVersion = "313";
+      
       string pythonDll = "";
 
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -22,6 +22,9 @@ namespace NETPython
           .Select(arr => (Key: arr[0].Trim(), Value: arr[1].Trim()))
           .GroupBy(x => x.Key)
           .ToDictionary(keyGroup => keyGroup.Key, keyGroup => keyGroup.First().Value);
+
+      // Extract major and minor version (e.g., "3.11" from "3.11.4"), remove the dot for dll naming.
+      string pyVersion = config["version"][..config["version"].LastIndexOf(".")].Replace(".", "");
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
