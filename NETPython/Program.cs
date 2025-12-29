@@ -43,7 +43,7 @@ namespace NETPython
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
-        Console.WriteLine("Running on macOS!");
+        pythonDll = config["executable"];
       }
       else
       {
