@@ -9,10 +9,12 @@ context of an object, so ...
 
 As Python is one of the most widely used languages, I assumed support for integration
 with .NET would be mature by now. Unfortunately, it isn't, and I'm not sure I'd recommend
-using it in production, especially in Core 9+, as it isn't fully compatible.
+using it in production, especially in Core 9+, as it isn't fully compatible. The mandatory
+ShutDown() method has a dependency on BinaryFormatter, which has been removed from the
+platform. The only practical option is to trap an exception and hope for the best.
 
 Particularly problematic was getting modules to load from a .venv virtual environment.
 None of the recommended approaches in forum posts worked. I eventually found a solution.
 
-I should have guessed that there was trouble in paradise in paradise to the paucity of
+I should have guessed that there was trouble in paradise on account of the paucity of
 information and demo code on the pythonNET site.
