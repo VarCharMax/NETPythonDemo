@@ -84,8 +84,10 @@ namespace NETPython
           dynamic module = Py.Import("rw_visual");
           module.create_plot();
 
-          // Shutdown() will throw an exception because of reliance on BinaryFormatter which is obsolete.
-          // Currently this is unavoidable due to how pythonnet works. Catching the exception is the best we can do.
+          // Shutdown() will throw an exception because of reliance on BinaryFormatter
+          // which is no longer supported on Core 9+.
+          // Currently this is unavoidable due to how pythonnet works. Catching the
+          // exception is the best we can do.
           PythonEngine.Shutdown();
         }
         catch (PlatformNotSupportedException)
