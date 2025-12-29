@@ -8,10 +8,14 @@ namespace NETPython
   {
     static void Main(string[] args)
     {
+      //Highest Python version compatible with compatible is currently 3.13.
+      const string pyVersion = "313";
       string pythonDll = "";
 
-      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv", "pyvenv.cfg");
+      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        "Scripts", ".venv", "pyvenv.cfg");
 
+      //Get Python configuration from pyvenv.cfg
       Dictionary<string, string> config = File.ReadLines(pathToVirtualEnv)
           .Select(line => line.Trim().Split('='))
           .Where(arr => arr.Length == 2)
@@ -21,7 +25,7 @@ namespace NETPython
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        pythonDll = Path.Combine(config["home"], "python313.dll");
+        pythonDll = Path.Combine(config["home"], $"python{pyVersion}.dll");
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
@@ -36,8 +40,6 @@ namespace NETPython
         ExceptionDispatchInfo.Capture(new PlatformNotSupportedException("Unsupported OS platform")).Throw();
       }
 
-      //Highest Python version compatible with compatible is currently 3.13.
-      // var pathToBaseEnv = @"C:\Users\rpark\AppData\Local\Python\pythoncore-3.13-64";
       Runtime.PythonDLL = pythonDll;
 
       PythonEngine.Initialize();
@@ -47,7 +49,7 @@ namespace NETPython
         try
         {
           /* Note: I found numerous forum posts saying that the correct way to support Python in .NET is with these kinds of settings:
-           
+
            string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
            path = string.IsNullOrEmpty(path) ? pathToVirtualEnv : pathToVirtualEnv + ";" + path;
            Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
@@ -56,7 +58,7 @@ namespace NETPython
            PythonEngine.Initialize();
            PythonEngine.PythonHome = pathToVirtualEnv;
            PythonEngine.PythonPath = PythonEngine.PythonPath + ";" + Environment.GetEnvironmentVariable("PYTHONPATH", EnvironmentVariableTarget.Process);
-           
+
            I couldn't get pythonnet to load the virtual environment modules using these settings, however. I suspect it's looking for the modules
            relative to the base Python installation rather than the virtual environment.
            The below code works.
@@ -84,7 +86,7 @@ namespace NETPython
         }
         finally
         {
-         
+
         }
       }
     }
