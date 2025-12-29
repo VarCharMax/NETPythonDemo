@@ -30,7 +30,7 @@ namespace NETPython
 
       if (pyVersion != pynetversion.Replace(".", ""))
       {
-        throw new Exception($"Python version {pynetversion} either not installed or not configured");
+        throw new Exception($"Compatible Python version {pynetversion} either not installed or not configured");
       }
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
