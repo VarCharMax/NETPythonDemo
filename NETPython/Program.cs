@@ -24,7 +24,7 @@ namespace NETPython
           .ToDictionary(keyGroup => keyGroup.Key, keyGroup => keyGroup.First().Value);
 
       // Extract major and minor version (e.g., "3.11" from "3.11.4"), remove the dot for dll naming.
-      string pyVersion = config["version"][..config["version"].LastIndexOf(".")].Replace(".", "");
+      string pyVersion = config["version"][..config["version"].LastIndexOf('.')].Replace(".", "");
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
