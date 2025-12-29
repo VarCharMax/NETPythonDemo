@@ -9,7 +9,7 @@ namespace NETPython
     static void Main(string[] args)
     {
       //Highest Python version compatible with pythonNet is currently 3.13.
-
+      const string pynetversion = "3.13";
       string pythonDll = "";
 
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -27,6 +27,11 @@ namespace NETPython
       // remove the dot for dll naming.
       string pyVersion = config["version"][..config["version"]
         .LastIndexOf('.')].Replace(".", "");
+
+      if (pyVersion != pynetversion.Replace(".", ""))
+      {
+        throw new Exception($"Python version {pynetversion} either not installed or not configured");
+      }
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
