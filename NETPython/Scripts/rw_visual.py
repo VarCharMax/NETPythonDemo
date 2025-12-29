@@ -3,6 +3,9 @@
 import matplotlib.pyplot as plt
 from random_walk import RandomWalk
 
+SAVE_PATH = "C:\\tmp\\"
+SAVE_FILE = "random_walk"
+
 
 # Make a random walk.
 def create_plot() -> None:
@@ -23,7 +26,10 @@ def create_plot() -> None:
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-    plt.savefig("random_walk.png")
+    try:
+        plt.savefig(SAVE_PATH + SAVE_FILE + ".png", bbox_inches="tight")
+    except Exception as e:
+        print(f"Error saving plot: {e}  ")
 
 
 if __name__ == "__main__":

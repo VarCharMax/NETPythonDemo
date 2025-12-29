@@ -82,7 +82,7 @@ namespace NETPython
           sys.path.append("Scripts/.venv/Lib/site-packages");
 
           dynamic module = Py.Import("rw_visual");
-          dynamic result = module.create_plot();
+          module.create_plot();
 
           // Shutdown() will throw an exception because of reliance on BinaryFormatter which is obsolete.
           // Currently this is unavoidable due to how pythonnet works. Catching the exception is the best we can do.
