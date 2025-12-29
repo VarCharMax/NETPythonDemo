@@ -17,21 +17,26 @@ namespace NETPython
         try
         {
           /* Note: I found numerous forum posts saying that the correct way to support Python in .NET is with these kinds of settings:
-          * 
-          * path = string.IsNullOrEmpty(path) ? pathToVirtualEnv : pathToVirtualEnv + ";" + path;
-          * Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
-          * Environment.SetEnvironmentVariable("PYTHONHOME", pathToVirtualEnv, EnvironmentVariableTarget.Process);
-          * Environment.SetEnvironmentVariable("PYTHONPATH", $"{pathToVirtualEnv}\\Lib\\site-packages;{pathToVirtualEnv}\\Lib", EnvironmentVariableTarget.Process);
-          * 
-          * I couldn't get pythonnet to load the virtual environment modules using these settings, however. I suspect it's looking for the modules
-          * relative to the base Python installation rather than the virtual environment.
-          * The below code works.
+           
+           string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
+           path = string.IsNullOrEmpty(path) ? pathToVirtualEnv : pathToVirtualEnv + ";" + path;
+           Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
+           Environment.SetEnvironmentVariable("PYTHONHOME", pathToVirtualEnv, EnvironmentVariableTarget.Process);
+           Environment.SetEnvironmentVariable("PYTHONPATH", $"{pathToVirtualEnv}\\Lib\\site-packages;{pathToVirtualEnv}\\Lib", EnvironmentVariableTarget.Process);
+           PythonEngine.Initialize();
+           PythonEngine.PythonHome = pathToVirtualEnv;
+           PythonEngine.PythonPath = PythonEngine.PythonPath + ";"+Environment.GetEnvironmentVariable("PYTHONPATH", EnvironmentVariableTarget.Process);
+           
+           I couldn't get pythonnet to load the virtual environment modules using these settings, however. I suspect it's looking for the modules
+           relative to the base Python installation rather than the virtual environment.
+           The below code works.
           */
 
           dynamic sys = Py.Import("sys");
           sys.path.append("Scripts");
           sys.path.append("Scripts/.venv/Lib");
           sys.path.append("Scripts/.venv/Lib/site-packages");
+
           dynamic exampleModule = Py.Import("rw_visual");
           dynamic result = exampleModule.create_plot();
 
