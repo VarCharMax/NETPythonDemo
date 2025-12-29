@@ -8,7 +8,7 @@ namespace NETPython
   {
     static void Main(string[] args)
     {
-      //Highest Python version compatible with compatible is currently 3.13.
+      //Highest Python version compatible with pythonNet is currently 3.13.
 
       string pythonDll = "";
 
