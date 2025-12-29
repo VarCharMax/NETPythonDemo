@@ -98,10 +98,6 @@ namespace NETPython
         {
           Console.WriteLine($"Python error: {ex.Message}");
         }
-        finally
-        {
-
-        }
       }
     }
   }
