@@ -87,7 +87,7 @@ namespace NETPython
           sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
 
           dynamic module = Py.Import("rw_visual");
-          module.create_plot(5);
+          module.create_plot(100);
 
           // Shutdown() will throw an exception because of reliance on BinaryFormatter
           // which is no longer supported on Core 9+.

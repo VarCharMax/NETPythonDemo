@@ -29,7 +29,7 @@ def create_plot(loopcount: int) -> None:
         rw = RandomWalk()
         rw.fill_walk()
         # Plot the points in the walk.
-        fig, ax = plt.subplots(figsize=(15, 9))  # pylint: disable=unused-variable
+        fig, ax = plt.subplots(figsize=(15, 9))
         point_numbers = range(rw.num_points)
         ax.scatter(
             rw.x_values,
@@ -57,7 +57,9 @@ def create_plot(loopcount: int) -> None:
                     bbox_inches="tight",
                 )
         except IOError as e:
-            print(f"Error saving plot: {e}  ")
+            print(f"Error saving plot: {e}.")
+
+        plt.close(fig)
 
         i += 1
 
