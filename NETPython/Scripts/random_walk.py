@@ -1,4 +1,7 @@
+""" "A class to generate random walks."""
+
 from random import choice
+
 
 class RandomWalk:
     """A class to generate random walks."""
@@ -11,7 +14,7 @@ class RandomWalk:
         self.x_values = [0]
         self.y_values = [0]
 
-    def fill_walk(self):
+    def fill_walk(self) -> None:
         """Calculate all the points in the walk."""
 
         # Keep taking steps until the walk reaches the desired length.

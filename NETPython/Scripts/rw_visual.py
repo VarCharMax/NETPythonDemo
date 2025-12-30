@@ -19,13 +19,13 @@ def create_plot(loopcount: int) -> None:
     if sys.platform in ["darwin"]:  # Mac OS
         save_path = "/Users/rohanparkes/tmp/"
 
-    rw = RandomWalk()
     plt.style.use("classic")
 
     i = 0
     cmap_blue = plt.cm.Blues  # type: ignore # pylint: disable=no-member
 
     while i < loopcount:
+        rw = RandomWalk()
         rw.fill_walk()
         # Plot the points in the walk.
         fig, ax = plt.subplots(figsize=(15, 9))  # pylint: disable=unused-variable
