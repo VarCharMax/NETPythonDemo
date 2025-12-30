@@ -85,8 +85,6 @@ namespace NETPython
           sys.path.append("Scripts");
           sys.path.append("Scripts/.venv/Lib");
           sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
-          Console.WriteLine($"Scripts/.venv/Lib/{macosShim}site-packages");
-          // Scripts/.venv/lib/python3.13/site-packages
 
           dynamic module = Py.Import("rw_visual");
           module.create_plot();
