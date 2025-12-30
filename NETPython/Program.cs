@@ -44,7 +44,10 @@ namespace NETPython
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
         pythonDll = config["executable"];
-        // On macOS, we need to use a shim to load the Python dynamic library.
+        // On macOS, we need to use a shim to load the Python environment modules.
+        // This is because the folder structure is different from Windows.
+        // It's possible that this was due to my creating the .venv folder
+        // progammatically rather than using the VS Code Python extension to create it.
         macosShim = $"python{pynetversion}/";
       }
       else

@@ -23,9 +23,9 @@ information and demo code on the pythonNET site.
 
 The aim in making the Python component self-maintaining is to intelligently parse the
 Python environment .venv config file to loate the correct references for the Python
-library. Exaclt how this is doen depends on how the Python runtimes were installed. It
-has to be consistent for it to be automatically upgradable. For Windows, I used to
-provided installers. For Mac OS, I must have used Homebrew, but I'm not entirely sure -
-possibly I used a different ustility which in turn used brew. But the important thing is
-to keep trackk of the process and always do it the same way. At the momen, this is just
+library. Exaclt how this is done depends on how the Python runtimes were installed. It
+has to be consistent for it to be automatically upgradable. For Windows, I used the
+provided installers. For Mac OS, I might have used Homebrew, but I'm not entirely sure -
+possibly I used a different utility which in turn used brew. But the important thing is
+to keep track of the process and always do it the same way. At the moment, this is just
 a demo of how you can make a cross-platform .NET-to-Python implementation.
