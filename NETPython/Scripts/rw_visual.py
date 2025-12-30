@@ -25,6 +25,7 @@ def create_plot(loopcount: int) -> None:
     cmap_blue = plt.cm.Blues  # type: ignore # pylint: disable=no-member
 
     while i < loopcount:
+        # This must be instantiated inside the loop to get a new walk each time.
         rw = RandomWalk()
         rw.fill_walk()
         # Plot the points in the walk.
