@@ -47,7 +47,7 @@ namespace NETPython
         // On macOS, we need to use a shim to load the Python environment modules.
         // This is because the folder structure is different from Windows.
         // It's possible that this was due to my creating the .venv folder
-        // progammatically rather than using the VS Code Python extension to create it.
+        // programmatically rather than using the VS Code Python extension to create it.
         macosShim = $"python{pynetversion}/";
       }
       else
@@ -87,7 +87,7 @@ namespace NETPython
           sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
 
           dynamic module = Py.Import("rw_visual");
-          module.create_plot();
+          module.create_plot(5);
 
           // Shutdown() will throw an exception because of reliance on BinaryFormatter
           // which is no longer supported on Core 9+.
@@ -95,7 +95,7 @@ namespace NETPython
           // exception is the best we can do.
           // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
           PythonEngine.Shutdown();
-          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false);
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
         }
         catch (PlatformNotSupportedException)
         {
