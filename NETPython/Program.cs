@@ -88,7 +88,9 @@ namespace NETPython
           // which is no longer supported on Core 9+.
           // Currently this is unavoidable due to how pythonnet works. Catching the
           // exception is the best we can do.
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
           PythonEngine.Shutdown();
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false);
         }
         catch (PlatformNotSupportedException)
         {
