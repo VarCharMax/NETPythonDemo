@@ -11,7 +11,7 @@ namespace NETPython
       //Highest Python version compatible with pythonNet is currently 3.13.
       const string pynetversion = "3.13";
       string pythonDll = "";
-
+      string macosShim = "";
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
         "Scripts", ".venv", "pyvenv.cfg");
 
@@ -44,6 +44,8 @@ namespace NETPython
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
         pythonDll = config["executable"];
+        // On macOS, we need to use a shim to load the Python dynamic library.
+        macosShim = $"python{pynetversion}/";
       }
       else
       {
@@ -79,7 +81,9 @@ namespace NETPython
           dynamic sys = Py.Import("sys");
           sys.path.append("Scripts");
           sys.path.append("Scripts/.venv/Lib");
-          sys.path.append("Scripts/.venv/Lib/site-packages");
+          sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
+          Console.WriteLine($"Scripts/.venv/Lib/{macosShim}site-packages");
+          // Scripts/.venv/lib/python3.13/site-packages
 
           dynamic module = Py.Import("rw_visual");
           module.create_plot();

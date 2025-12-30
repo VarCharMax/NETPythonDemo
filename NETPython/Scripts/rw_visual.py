@@ -5,12 +5,12 @@ import datetime
 import matplotlib.pyplot as plt
 from random_walk import RandomWalk
 
-SAVE_PATH = ""
+save_path = ""
 
 if sys.platform == "win32":  # Windows
-    SAVE_PATH = "C:\\tmp\\"
+    save_path = "C:\\tmp\\"
 if sys.platform in ["darwin"]:  # Mac OS
-    SAVE_PATH = "/Users/rohanparkes/tmp/"
+    save_path = "/Users/rohanparkes/tmp/"
 
 SAVE_FILE = "random_walk"
 
@@ -38,9 +38,9 @@ def create_plot() -> None:
     timestamp_str = current_time.strftime("%Y%m%d%H%M%S")
 
     try:
-        if SAVE_PATH:
+        if save_path:
             plt.savefig(
-                SAVE_PATH + SAVE_FILE + f"_{timestamp_str}.png", bbox_inches="tight"
+                save_path + SAVE_FILE + f"_{timestamp_str}.png", bbox_inches="tight"
             )
     except Exception as e:
         print(f"Error saving plot: {e}  ")
