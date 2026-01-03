@@ -11,20 +11,22 @@ namespace NETPython
 
     public static bool Initialise(string? virtualEnvPath = null)
     {
-        if (!string.IsNullOrEmpty(virtualEnvPath))
-        {
-          InitialiseVirtual(virtualEnvPath);
-        }
-        else
-        {
-          PythonInitialiser pInint = new();
+      if (PythonEngine.IsInitialized)
+      {
+        return true;
       }
 
+      if (!string.IsNullOrEmpty(virtualEnvPath))
+      {
+        InitialiseVirtual(virtualEnvPath);
+      }
+      else
+      {
         switch (OperatingSystemHelper.CheckPlatform())
         {
-        case OperatingSystem.Windows:
-          PythonInitialiserWin();
-          break;
+          case OperatingSystem.Windows:
+            PythonInitialiserWin();
+            break;
           case OperatingSystem.Linux:
             // Linux specific initialisation can go here
             break;
@@ -33,8 +35,9 @@ namespace NETPython
             break;
           case OperatingSystem.Unknown:
             throw new PlatformNotSupportedException("The operating system is not supported.");
+        }
       }
-        
+
       if (Runtime.PythonDLL != null)
       {
         try
@@ -55,7 +58,7 @@ namespace NETPython
         }
         catch (Exception ex)
         {
-          
+
         }
       }
 
