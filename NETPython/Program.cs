@@ -8,17 +8,23 @@ namespace NETPython
   {
     static void Main(string[] args)
     {
-      PythonInitialiser pInint = new();
+      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        "Scripts", ".venv", "pyvenv.cfg");
 
-      // PythonInitialiser pInint = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-      //  "Scripts", ".venv"));
+      if (PythonInitialiser.Initialise(pathToVirtualEnv))
+        {
+        Console.WriteLine("Python initialized successfully.");
+      }
+      else
+      {
+        Console.WriteLine("Failed to initialize Python.");
+      }
 
       //Highest Python version compatible with pythonNet is currently 3.13.
       const string pynetversion = "3.13";
       string pythonDll = "";
       string macosShim = "";
-      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-        "Scripts", ".venv", "pyvenv.cfg");
+      
 
       //Get Python configuration from pyvenv.cfg
       Dictionary<string, string> config = File.ReadLines(pathToVirtualEnv)

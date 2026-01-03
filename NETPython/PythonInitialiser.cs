@@ -4,27 +4,65 @@ using System.Diagnostics;
 
 namespace NETPython
 {
-  internal class PythonInitialiser
+  public class PythonInitialiser
   {
-    private string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
-    private string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
+    private static readonly string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
+    private static readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
 
-    public PythonInitialiser()
+    public static bool Initialise(string? virtualEnvPath = null)
     {
-      if (Runtime.PythonDLL == null)
-      {
-        if (OperatingSystemHelper.CheckPlatform() == OperatingSystem.Windows)
+        if (!string.IsNullOrEmpty(virtualEnvPath))
         {
+          InitialiseVirtual(virtualEnvPath);
+        }
+        else
+        {
+          PythonInitialiser pInint = new();
+      }
+
+        switch (OperatingSystemHelper.CheckPlatform())
+        {
+        case OperatingSystem.Windows:
           PythonInitialiserWin();
-          if (Runtime.PythonDLL != null)
+          break;
+          case OperatingSystem.Linux:
+            // Linux specific initialisation can go here
+            break;
+          case OperatingSystem.MacOS:
+            // MacOS specific initialisation can go here
+            break;
+          case OperatingSystem.Unknown:
+            throw new PlatformNotSupportedException("The operating system is not supported.");
+      }
+        
+      if (Runtime.PythonDLL != null)
+      {
+        try
+        {
+          PythonEngine.Initialize();
+        }
+        catch (TypeInitializationException tie)
+        {
+          if (tie.InnerException is DllNotFoundException)
           {
-            PythonEngine.Initialize();
+            // Handle the DllNotFoundException specifically
+            // throw new Exception("The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.", tie);
+        }
+          else
+          {
+            throw; // Rethrow if it's a different exception
           }
         }
+        catch (Exception ex)
+        {
+          
+        }
       }
+
+      return PythonEngine.IsInitialized;
     }
 
-    public void PythonInitialiserWin()
+    private static void PythonInitialiserWin()
     {
       string? pythonVersion = null;
 
@@ -86,12 +124,10 @@ namespace NETPython
       }
     }
 
-    public PythonInitialiser(string virtualEnvPath)
+    private static void InitialiseVirtual(string virtualEnvPath)
     {
       if (!string.IsNullOrEmpty(virtualEnvPath))
       {
-       
-
         string pathToVirtualEnv = Path.Combine(virtualEnvPath, "pyvenv.cfg");
 
         if (File.Exists(pathToVirtualEnv) == false)
@@ -111,7 +147,7 @@ namespace NETPython
         // remove the dot for dll naming.
         string pyVersion = config["version"][..config["version"].LastIndexOf('.')];
 
-        if (String.Compare(pynetminversion, pyVersion, StringComparison.OrdinalIgnoreCase) < 0 
+        if (String.Compare(pynetminversion, pyVersion, StringComparison.OrdinalIgnoreCase) < 0
           || String.Compare(pyVersion, pynetmaxversion, StringComparison.OrdinalIgnoreCase) > 0)
         {
           throw new Exception($"Compatible Python version between {pynetminversion} and {pynetmaxversion} either not installed or not configured");
@@ -119,8 +155,6 @@ namespace NETPython
 
         // Set the Python home to the virtual environment path
         PythonEngine.PythonHome = virtualEnvPath;
-
-        PythonEngine.Initialize();
       }
     }
   }
