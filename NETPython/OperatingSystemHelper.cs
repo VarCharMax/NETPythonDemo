@@ -2,25 +2,33 @@
 
 namespace NETPython
 {
+  public enum OperatingSystem
+  {
+    Windows,
+    Linux,
+    MacOS,
+    Unknown
+  }
+
   public static class OperatingSystemHelper
   {
-    public static void CheckPlatform()
+    public static OperatingSystem CheckPlatform()
     {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        Console.WriteLine("Running on Windows!");
+        return OperatingSystem.Windows;
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
-        Console.WriteLine("Running on Linux!");
+        return OperatingSystem.Linux;
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
-        Console.WriteLine("Running on macOS!");
+        return OperatingSystem.MacOS;
       }
       else
       {
-        Console.WriteLine("Unknown operating system.");
+        return OperatingSystem.Unknown;
       }
     }
   }

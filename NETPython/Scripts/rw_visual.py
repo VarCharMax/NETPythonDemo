@@ -20,9 +20,9 @@ def create_plot(loopcount: int) -> None:
         save_path = "/Users/rohanparkes/tmp/"
 
     plt.style.use("classic")
+    cmap_blue = plt.cm.Blues  # type: ignore # pylint: disable=no-member
 
     i = 0
-    cmap_blue = plt.cm.Blues  # type: ignore # pylint: disable=no-member
 
     while i < loopcount:
         # This must be instantiated inside the loop to get a new walk each time.
@@ -39,6 +39,7 @@ def create_plot(loopcount: int) -> None:
             edgecolors="none",
             s=1,
         )  # type: ignore
+
         ax.set_aspect("equal")
 
         ax.scatter(0, 0, c="green", edgecolors="none", s=100)

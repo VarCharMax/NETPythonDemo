@@ -8,6 +8,11 @@ namespace NETPython
   {
     static void Main(string[] args)
     {
+      PythonInitialiser pInint = new();
+
+      // PythonInitialiser pInint = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+      //  "Scripts", ".venv"));
+
       //Highest Python version compatible with pythonNet is currently 3.13.
       const string pynetversion = "3.13";
       string pythonDll = "";
@@ -87,7 +92,7 @@ namespace NETPython
           sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
 
           dynamic module = Py.Import("rw_visual");
-          module.create_plot(100);
+          module.create_plot(50);
 
           // Shutdown() will throw an exception because of reliance on BinaryFormatter
           // which is no longer supported on Core 9+.
