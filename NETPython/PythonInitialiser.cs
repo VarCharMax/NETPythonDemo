@@ -127,10 +127,10 @@ namespace NETPython
         return $"Compatible Python version between {pynetminversion} and {pynetmaxversion} either not installed or not configured";
       }
 
+#pragma warning disable CA1416 // Validate platform compatibility
       RegistryKey? key = Registry.CurrentUser.OpenSubKey($@"Software\Python\PythonCore\{pythonVersion}\InstallPath");
-
       string path = key?.GetValue("")?.ToString() ?? "";
-
+#pragma warning restore CA1416 // Validate platform compatibility
       if (string.IsNullOrEmpty(path) == true)
       {
         return $"Python {pythonVersion} install path not found in registry.";
