@@ -10,45 +10,68 @@ namespace NETPython
     private static readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
     private static readonly OperatingSystem os = OperatingSystemHelper.CheckPlatform();
 
-    public static string Initialise(string? virtualEnvPath = null, string? subFolder = null)
+    public static string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
     {
       if (PythonEngine.IsInitialized)
       {
         return "";
       }
 
+      string message;
+
       if (!string.IsNullOrEmpty(virtualEnvPath))
       {
-        string message = InitialiseVirtual(virtualEnvPath, subFolder);
-        if (!string.IsNullOrEmpty(message))
-        {
-          return message;
-        }
+        message = InitialiseVirtual(virtualEnvPath, subFolder);
       }
       else
       {
-        switch (os)
-        {
-          case OperatingSystem.Windows:
-            PythonInitialiserWin();
-            break;
-          case OperatingSystem.Linux:
-            // Linux specific initialisation can go here
-            break;
-          case OperatingSystem.MacOS:
-            // MacOS specific initialisation can go here
-            break;
-          case OperatingSystem.Unknown:
-            // throw new PlatformNotSupportedException("The operating system is not supported.");
-            return "The operating system is not supported.";
-        }
+        message = Initialise();
       }
 
+      if (!string.IsNullOrEmpty(message))
+      {
+        return message;
+      }
+
+      if (PythonEngine.IsInitialized == false)
+      {
+        return "Python engine failed to initialize.";
+      }
+
+      return "";
+    }
+
+    public static string Initialise()
+    {
+      switch (os)
+      {
+        case OperatingSystem.Windows:
+          PythonInitialiserWin();
+          break;
+        case OperatingSystem.Linux:
+          // Linux specific initialisation can go here
+          break;
+        case OperatingSystem.MacOS:
+          // MacOS specific initialisation can go here
+          break;
+        case OperatingSystem.Unknown:
+          // throw new PlatformNotSupportedException("The operating system is not supported.");
+          return "The operating system is not supported.";
+      }
+
+      return "";
+    }
+
+    private static string InitializePythonEngine()
+    {
       if (Runtime.PythonDLL != null)
       {
         try
         {
-          PythonEngine.Initialize();
+          if (!PythonEngine.IsInitialized)
+          {
+            PythonEngine.Initialize();
+          }
         }
         catch (TypeInitializationException tie)
         {
@@ -57,7 +80,7 @@ namespace NETPython
             // Handle the DllNotFoundException specifically
             // throw new Exception("The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.", tie);
             return "The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.";
-        }
+          }
           else
           {
             // throw; // Rethrow if it's a different exception
@@ -69,12 +92,28 @@ namespace NETPython
         }
       }
 
-      if (PythonEngine.IsInitialized == false)
-      {
-        return "Python engine failed to initialize.";
-      }
-
       return "";
+    }
+
+    public static void Shutdown()
+    {
+      if (PythonEngine.IsInitialized)
+      {
+        try
+        {
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
+          PythonEngine.Shutdown();
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
+        }
+        catch (PlatformNotSupportedException)
+        {
+          // Ignore the exception as the shutdown likely proceeded enough
+        }
+        catch (PythonException)
+        {
+          
+        }
+      }
     }
 
     private static string PythonInitialiserWin()
@@ -130,7 +169,7 @@ namespace NETPython
 #pragma warning disable CA1416 // Validate platform compatibility
       RegistryKey? key = Registry.CurrentUser.OpenSubKey($@"Software\Python\PythonCore\{pythonVersion}\InstallPath");
       string path = key?.GetValue("")?.ToString() ?? "";
-#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416
       if (string.IsNullOrEmpty(path) == true)
       {
         return $"Python {pythonVersion} install path not found in registry.";
@@ -147,7 +186,7 @@ namespace NETPython
       return "";
     }
 
-    private static string InitialiseVirtual(string virtualEnvPath, string? subFolder = null)
+    private static string InitialiseVirtual(string virtualEnvPath, string? scriptsFolder)
     {
       if (!string.IsNullOrEmpty(virtualEnvPath))
       {
@@ -184,7 +223,7 @@ namespace NETPython
         switch (os)
         {
           case OperatingSystem.Windows:
-            pythonDll = Path.Combine(config["home"], $"python{pyVersion}.dll");
+            pythonDll = Path.Combine(config["home"], $"python{pyVersion.Replace(".", "")}.dll");
             break;
           case OperatingSystem.MacOS:
             pythonDll = config["executable"];
@@ -201,8 +240,22 @@ namespace NETPython
 
         Runtime.PythonDLL = pythonDll;
 
+        string message = InitializePythonEngine();
+        if (!string.IsNullOrEmpty(message))
+        {
+          return message;
+        }
+
+        using (Py.GIL())
+        {
+          dynamic sys = Py.Import("sys");
+          sys.path.append(scriptsFolder);
+          sys.path.append($"{scriptsFolder}/.venv/Lib");
+          sys.path.append($"{scriptsFolder}/.venv/Lib/{macosShim}site-packages");
+        }
+
         // Set the Python home to the virtual environment path
-        PythonEngine.PythonHome = virtualEnvPath;
+        //PythonEngine.PythonHome = virtualEnvPath;
       }
 
       return "";
