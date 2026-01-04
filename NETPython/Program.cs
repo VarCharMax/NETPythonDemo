@@ -1,6 +1,4 @@
 ﻿using Python.Runtime;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 
 namespace NETPython
 {
@@ -8,69 +6,14 @@ namespace NETPython
   {
     static void Main(string[] args)
     {
-      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-        "Scripts", ".venv", "pyvenv.cfg");
+      string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
 
-      if (PythonInitialiser.Initialise(pathToVirtualEnv))
-        {
-        Console.WriteLine("Python initialized successfully.");
-      }
-      else
+      string message;
+      if ((message = PythonInitialiser.Initialise(pathToVirtualEnv)) != "")
       {
-        Console.WriteLine("Failed to initialize Python.");
+        Console.WriteLine(message);
+        return;
       }
-
-      //Highest Python version compatible with pythonNet is currently 3.13.
-      const string pynetversion = "3.13";
-      string pythonDll = "";
-      string macosShim = "";
-      
-
-      //Get Python configuration from pyvenv.cfg
-      Dictionary<string, string> config = File.ReadLines(pathToVirtualEnv)
-          .Select(line => line.Trim().Split('='))
-          .Where(arr => arr.Length == 2)
-          .Select(arr => (Key: arr[0].Trim(), Value: arr[1].Trim()))
-          .GroupBy(x => x.Key)
-          .ToDictionary(keyGroup => keyGroup.Key, keyGroup => keyGroup.First().Value);
-
-      // Extract major and minor version (e.g., "3.11" from "3.11.4"),
-      // remove the dot for dll naming.
-      string pyVersion = config["version"][..config["version"]
-        .LastIndexOf('.')].Replace(".", "");
-
-      if (pyVersion != pynetversion.Replace(".", ""))
-      {
-        throw new Exception($"Compatible Python version {pynetversion} either not installed or not configured");
-      }
-
-      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-      {
-        pythonDll = Path.Combine(config["home"], $"python{pyVersion}.dll");
-      }
-      else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-      {
-        Console.WriteLine("Running on Linux!");
-      }
-      else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-      {
-        pythonDll = config["executable"];
-        // On macOS, we need to use a shim to load the Python environment modules.
-        // This is because the folder structure is different from Windows.
-        // It's possible that this was due to my creating the .venv folder
-        // programmatically rather than using the VS Code Python extension to create it.
-        macosShim = $"python{pynetversion}/";
-      }
-      else
-      {
-        ExceptionDispatchInfo
-          .Capture(new PlatformNotSupportedException("Unsupported OS platform"))
-          .Throw();
-      }
-
-      Runtime.PythonDLL = pythonDll;
-
-      PythonEngine.Initialize();
 
       using (Py.GIL())
       {
@@ -95,7 +38,7 @@ namespace NETPython
           dynamic sys = Py.Import("sys");
           sys.path.append("Scripts");
           sys.path.append("Scripts/.venv/Lib");
-          sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
+          // sys.path.append($"Scripts/.venv/Lib/{macosShim}site-packages");
 
           dynamic module = Py.Import("rw_visual");
           module.create_plot(50);
