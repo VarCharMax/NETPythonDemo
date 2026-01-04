@@ -95,26 +95,29 @@ namespace NETPython
 
     private static string InitialiseStandard()
     {
+      string message = "";
+
       switch (os)
       {
         case OperatingSystem.Windows:
-          PythonInitialiserWin();
+          message = InitialiseWin();
           break;
         case OperatingSystem.Linux:
           // Linux specific initialisation can go here
+          throw new PlatformNotSupportedException("Linux operating system is not yet supported.");
           break;
         case OperatingSystem.MacOS:
-          // MacOS specific initialisation can go here
+          throw new PlatformNotSupportedException("Mac OS operating system is not yet supported.");
           break;
         case OperatingSystem.Unknown:
           // throw new PlatformNotSupportedException("The operating system is not supported.");
           return "The operating system is not supported.";
       }
 
-      return "";
+      return message;
     }
 
-    private static string PythonInitialiserWin()
+    private static string InitialiseWin()
     {
       string? pythonVersion = null;
 
