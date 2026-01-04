@@ -62,39 +62,6 @@ namespace NETPython
       return "";
     }
 
-    private static string InitializePythonEngine()
-    {
-      if (Runtime.PythonDLL != null)
-      {
-        try
-        {
-          if (!PythonEngine.IsInitialized)
-          {
-            PythonEngine.Initialize();
-          }
-        }
-        catch (TypeInitializationException tie)
-        {
-          if (tie.InnerException is DllNotFoundException)
-          {
-            // Handle the DllNotFoundException specifically
-            // throw new Exception("The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.", tie);
-            return "The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.";
-          }
-          else
-          {
-            // throw; // Rethrow if it's a different exception
-          }
-        }
-        catch (Exception ex)
-        {
-          return ex.Message;
-        }
-      }
-
-      return "";
-    }
-
     public static void Shutdown()
     {
       if (PythonEngine.IsInitialized)
@@ -114,6 +81,37 @@ namespace NETPython
           
         }
       }
+    }
+
+    private static string InitializePythonEngine()
+    {
+      if (Runtime.PythonDLL != null)
+      {
+        try
+        {
+          if (!PythonEngine.IsInitialized)
+          {
+            PythonEngine.Initialize();
+          }
+        }
+        catch (TypeInitializationException tie)
+        {
+          if (tie.InnerException is DllNotFoundException)
+          {
+            return "The specified Python DLL was not found. Please ensure that the correct version of Python is installed and configured.";
+          }
+          else
+          {
+            return tie.InnerException?.Message ?? tie.Message;
+          }
+        }
+        catch (Exception ex)
+        {
+          return ex.Message;
+        }
+      }
+
+      return "";
     }
 
     private static string PythonInitialiserWin()
