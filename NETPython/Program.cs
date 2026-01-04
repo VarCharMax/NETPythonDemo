@@ -7,8 +7,8 @@ namespace NETPython
     static void Main(string[] args)
     {
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
-
       string message;
+
       if ((message = PythonInitialiser.InitialisePy(pathToVirtualEnv, "Scripts")) != "")
       {
         Console.WriteLine(message);
@@ -21,7 +21,7 @@ namespace NETPython
           module.create_plot(5);
       }
 
-      PythonInitialiser.Shutdown();
+      PythonInitialiser.ShutdownPy();
     }
   }
 }

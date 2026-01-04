@@ -25,7 +25,7 @@ namespace NETPython
       }
       else
       {
-        message = Initialise();
+        message = InitialiseStandard();
       }
 
       if (!string.IsNullOrEmpty(message))
@@ -41,28 +41,7 @@ namespace NETPython
       return "";
     }
 
-    public static string Initialise()
-    {
-      switch (os)
-      {
-        case OperatingSystem.Windows:
-          PythonInitialiserWin();
-          break;
-        case OperatingSystem.Linux:
-          // Linux specific initialisation can go here
-          break;
-        case OperatingSystem.MacOS:
-          // MacOS specific initialisation can go here
-          break;
-        case OperatingSystem.Unknown:
-          // throw new PlatformNotSupportedException("The operating system is not supported.");
-          return "The operating system is not supported.";
-      }
-
-      return "";
-    }
-
-    public static void Shutdown()
+    public static void ShutdownPy()
     {
       if (PythonEngine.IsInitialized)
       {
@@ -109,6 +88,27 @@ namespace NETPython
         {
           return ex.Message;
         }
+      }
+
+      return "";
+    }
+
+    private static string InitialiseStandard()
+    {
+      switch (os)
+      {
+        case OperatingSystem.Windows:
+          PythonInitialiserWin();
+          break;
+        case OperatingSystem.Linux:
+          // Linux specific initialisation can go here
+          break;
+        case OperatingSystem.MacOS:
+          // MacOS specific initialisation can go here
+          break;
+        case OperatingSystem.Unknown:
+          // throw new PlatformNotSupportedException("The operating system is not supported.");
+          return "The operating system is not supported.";
       }
 
       return "";
