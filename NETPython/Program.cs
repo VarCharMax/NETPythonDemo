@@ -9,7 +9,7 @@ namespace NETPython
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
       string message;
 
-      if ((message = PythonInitialiser.InitialisePy(pathToVirtualEnv, "Scripts")) != "")
+      if ((message = new PythonInitialiser().InitialisePy(pathToVirtualEnv, "Scripts")) != "")
       {
         Console.WriteLine(message);
         return;

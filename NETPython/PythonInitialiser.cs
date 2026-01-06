@@ -4,13 +4,13 @@ using System.Diagnostics;
 
 namespace NETPython
 {
-  public class PythonInitialiser
+  public class PythonInitialiser(bool useThreads = false)
   {
-    private static readonly string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
-    private static readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
-    private static readonly OperatingSystem os = OperatingSystemHelper.CheckPlatform();
+    private readonly string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
+    private readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
+    private readonly OperatingSystem os = OperatingSystemHelper.CheckPlatform();
 
-    public static string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
+    public string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
     {
       if (PythonEngine.IsInitialized)
       {
@@ -48,6 +48,7 @@ namespace NETPython
         try
         {
           // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
+          Py.GIL();
           PythonEngine.Shutdown();
           // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
         }
@@ -62,7 +63,7 @@ namespace NETPython
       }
     }
 
-    private static string InitializePythonEngine()
+    private string InitializePythonEngine()
     {
       if (Runtime.PythonDLL != null)
       {
@@ -71,6 +72,10 @@ namespace NETPython
           if (!PythonEngine.IsInitialized)
           {
             PythonEngine.Initialize();
+            if (useThreads == true)
+            {
+              PythonEngine.BeginAllowThreads();
+            }
           }
         }
         catch (TypeInitializationException tie)
@@ -93,7 +98,7 @@ namespace NETPython
       return "";
     }
 
-    private static string InitialiseStandard()
+    private string InitialiseStandard()
     {
       string message = "";
 
@@ -117,7 +122,7 @@ namespace NETPython
       return message;
     }
 
-    private static string InitialiseWin()
+    private string InitialiseWin()
     {
       string? pythonVersion = null;
 
@@ -187,7 +192,7 @@ namespace NETPython
       return "";
     }
 
-    private static string InitialiseVirtual(string virtualEnvPath, string? scriptsFolder)
+    private string InitialiseVirtual(string virtualEnvPath, string? scriptsFolder)
     {
       if (!string.IsNullOrEmpty(virtualEnvPath))
       {
@@ -195,7 +200,6 @@ namespace NETPython
 
         if (File.Exists(pathToVirtualEnv) == false)
         {
-          // throw new FileNotFoundException($"The virtual environment configuration file was not found at {pathToVirtualEnv}");
           return $"The virtual environment configuration file was not found at {pathToVirtualEnv}";
         }
 

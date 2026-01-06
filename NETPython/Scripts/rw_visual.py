@@ -20,12 +20,11 @@ def create_plot(loopcount: int) -> None:
         save_path = "/Users/rohanparkes/tmp/"
 
     plt.style.use("classic")
-    cmap_blue = plt.cm.Blues  # type: ignore # pylint: disable=no-member
 
     i = 0
 
     while i < loopcount:
-        # This must be instantiated inside the loop to get a new walk each time.
+        # Class must be instantiated inside the loop to get a new walk each time.
         rw = RandomWalk()
         rw.fill_walk()
         # Plot the points in the walk.
@@ -35,7 +34,7 @@ def create_plot(loopcount: int) -> None:
             rw.x_values,
             rw.y_values,
             c=point_numbers,
-            cmap=cmap_blue,
+            cmap=plt.cm.Blues,  # type: ignore # pylint: disable=no-member
             edgecolors="none",
             s=1,
         )  # type: ignore
