@@ -21,14 +21,18 @@ namespace NETPython
         try
         {
           dynamic module = Py.Import("rw_visual");
-          module.create_plot(5, @"C:\tmp");
+          module.create_plot(5, @"C:\nonexistentfolder");
         }
         catch(PythonException pex)
         {
           Console.WriteLine(pex.Format());
           //Console.ReadKey();
         }
-          
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex.Message);
+          //Console.ReadKey();
+        }
       }
     }
   }

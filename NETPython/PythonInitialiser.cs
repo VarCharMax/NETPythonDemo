@@ -36,10 +36,10 @@ namespace NETPython
 
       if (PythonEngine.IsInitialized == false)
       {
-        return "Python engine failed to initialize.";
+        message = "Python engine failed to initialize.";
       }
 
-      return "";
+      return message;
     }
 
     private string InitializePythonEngine()

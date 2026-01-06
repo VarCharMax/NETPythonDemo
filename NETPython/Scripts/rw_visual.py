@@ -11,10 +11,10 @@ SAVE_FILE = "random_walk"
 def create_plot(loopcount: int, path: str) -> None:
     """_summary_"""
 
-    save_path = path if path.endswith("/") else path + "/"
-
-    if not save_path:
+    if not path:
         raise ValueError("A valid save path must be provided.")
+
+    save_path = path if path.endswith("/") else path + "/"
 
     plt.style.use("classic")
 
@@ -48,13 +48,16 @@ def create_plot(loopcount: int, path: str) -> None:
         timestamp_str = current_time.strftime("%Y%m%d%H%M%S")
 
         try:
-            if save_path:
-                plt.savefig(
-                    save_path + SAVE_FILE + f"_{timestamp_str}_{i}.png",
-                    bbox_inches="tight",
-                )
+            plt.savefig(
+                save_path + SAVE_FILE + f"_{timestamp_str}_{i}.png",
+                bbox_inches="tight",
+            )
         except IOError as e:
             print(f"Error saving plot: {e}.")
+            raise
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}.")
+            raise
         finally:
             plt.close(fig)
 
