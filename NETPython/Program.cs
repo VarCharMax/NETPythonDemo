@@ -21,12 +21,13 @@ namespace NETPython
       {
         try
         {
-          dynamic module = Py.Import("rw_visual");
+          dynamic module = Py.Import("r_visual");
           module.create_plot(5);
         }
         catch(PythonException pex)
-        { 
-        
+        {
+          Console.WriteLine(pex.Format());
+          //Console.ReadKey();
         }
           
       }
