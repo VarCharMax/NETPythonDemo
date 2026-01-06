@@ -19,8 +19,16 @@ namespace NETPython
 
       using (Py.GIL())
       {
+        try
+        {
           dynamic module = Py.Import("rw_visual");
           module.create_plot(5);
+        }
+        catch(PythonException pex)
+        { 
+        
+        }
+          
       }
     }
   }
