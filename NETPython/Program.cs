@@ -21,7 +21,7 @@ namespace NETPython
         try
         {
           dynamic module = Py.Import("rw_visual");
-          module.create_plot(5, @"C:\nonexistentfolder");
+          module.create_plot(5, @"C:\tmp");
         }
         catch(PythonException pex)
         {
