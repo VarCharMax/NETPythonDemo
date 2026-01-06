@@ -62,4 +62,11 @@ def create_plot(loopcount: int, path: str) -> None:
 
 
 if __name__ == "__main__":
-    create_plot(5)
+    SAVE_PATH = ""
+    import sys
+
+    if sys.platform == "win32":  # Windows
+        SAVE_PATH = "C:\\tmp\\"
+    if sys.platform in ["darwin"]:  # Mac OS
+        SAVE_PATH = "/Users/rohanparkes/tmp/"
+    create_plot(5, SAVE_PATH)
