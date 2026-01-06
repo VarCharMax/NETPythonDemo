@@ -41,7 +41,7 @@ namespace NETPython
       return "";
     }
 
-    public static void ShutdownPy()
+    public void ShutdownPy()
     {
       if (PythonEngine.IsInitialized)
       {
