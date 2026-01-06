@@ -9,8 +9,8 @@ namespace NETPython
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
       string message;
 
-      using PythonInitialiser pythonInitialiser = new();
-      if ((message = pythonInitialiser.InitialisePy(pathToVirtualEnv)) != "")
+      using PythonInitialiser pyInit = new();
+      if ((message = pyInit.InitialisePy(pathToVirtualEnv)) != "")
       {
         Console.WriteLine(message);
         return;
@@ -26,14 +26,14 @@ namespace NETPython
         catch(PythonException pex)
         {
           Console.WriteLine(pex.Format());
-          //Console.ReadKey();
         }
         catch (Exception ex)
         {
           Console.WriteLine(ex.Message);
-          //Console.ReadKey();
         }
       }
+
+      Console.ReadKey();
     }
   }
 }
