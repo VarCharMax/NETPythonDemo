@@ -10,8 +10,7 @@ namespace NETPython
       string message;
 
       using PythonInitialiser pythonInitialiser = new();
-      if ((message = pythonInitialiser
-        .InitialisePy(pathToVirtualEnv, "Scripts")) != "")
+      if ((message = pythonInitialiser.InitialisePy(pathToVirtualEnv)) != "")
       {
         Console.WriteLine(message);
         return;
