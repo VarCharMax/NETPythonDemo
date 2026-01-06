@@ -1,6 +1,5 @@
 """Visualize a random walk using matplotlib."""
 
-import sys
 import datetime
 import matplotlib.pyplot as plt
 from random_walk import RandomWalk
@@ -9,15 +8,13 @@ SAVE_FILE = "random_walk"
 
 
 # Make a random walk.
-def create_plot(loopcount: int) -> None:
+def create_plot(loopcount: int, path: str) -> None:
     """_summary_"""
 
-    save_path = ""
+    save_path = path if path.endswith("/") else path + "/"
 
-    if sys.platform == "win32":  # Windows
-        save_path = "C:\\tmp\\"
-    if sys.platform in ["darwin"]:  # Mac OS
-        save_path = "/Users/rohanparkes/tmp/"
+    if not save_path:
+        raise ValueError("A valid save path must be provided.")
 
     plt.style.use("classic")
 
@@ -58,8 +55,8 @@ def create_plot(loopcount: int) -> None:
                 )
         except IOError as e:
             print(f"Error saving plot: {e}.")
-
-        plt.close(fig)
+        finally:
+            plt.close(fig)
 
         i += 1
 

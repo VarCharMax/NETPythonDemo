@@ -21,8 +21,8 @@ namespace NETPython
       {
         try
         {
-          dynamic module = Py.Import("r_visual");
-          module.create_plot(5);
+          dynamic module = Py.Import("rw_visual");
+          module.create_plot(5, @"C:\tmp");
         }
         catch(PythonException pex)
         {
