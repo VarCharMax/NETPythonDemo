@@ -4,11 +4,12 @@ using System.Diagnostics;
 
 namespace NETPython
 {
-  public class PythonInitialiser(bool useThreads = false)
+  public class PythonInitialiser(bool useThreads = false) : IDisposable
   {
     private readonly string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
     private readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
     private readonly OperatingSystem os = OperatingSystemHelper.CheckPlatform();
+    private bool disposedValue;
 
     public string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
     {
@@ -41,7 +42,7 @@ namespace NETPython
       return "";
     }
 
-    public void ShutdownPy()
+    private void ShutdownPy()
     {
       if (PythonEngine.IsInitialized)
       {
@@ -258,12 +259,36 @@ namespace NETPython
           sys.path.append($"{scriptsFolder}/.venv/Lib");
           sys.path.append($"{scriptsFolder}/.venv/Lib/{macosShim}site-packages");
         }
-
-        // Set the Python home to the virtual environment path
-        //PythonEngine.PythonHome = virtualEnvPath;
       }
 
       return "";
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          ShutdownPy();
+        }
+
+        disposedValue = true;
+      }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~PythonInitialiser()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+      Dispose(disposing: true);
+      GC.SuppressFinalize(this);
     }
   }
 }

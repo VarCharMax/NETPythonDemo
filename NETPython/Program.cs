@@ -9,7 +9,8 @@ namespace NETPython
       string pathToVirtualEnv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", ".venv");
       string message;
 
-      if ((message = new PythonInitialiser()
+      using PythonInitialiser pythonInitialiser = new();
+      if ((message = pythonInitialiser
         .InitialisePy(pathToVirtualEnv, "Scripts")) != "")
       {
         Console.WriteLine(message);
@@ -21,8 +22,6 @@ namespace NETPython
           dynamic module = Py.Import("rw_visual");
           module.create_plot(5);
       }
-
-      PythonInitialiser.ShutdownPy();
     }
   }
 }
