@@ -42,28 +42,6 @@ namespace NETPython
       return "";
     }
 
-    private void ShutdownPy()
-    {
-      if (PythonEngine.IsInitialized)
-      {
-        try
-        {
-          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
-          Py.GIL();
-          PythonEngine.Shutdown();
-          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
-        }
-        catch (PlatformNotSupportedException)
-        {
-          // Ignore the exception as the shutdown likely proceeded enough
-        }
-        catch (PythonException)
-        {
-          
-        }
-      }
-    }
-
     private string InitializePythonEngine()
     {
       if (Runtime.PythonDLL != null)
@@ -262,6 +240,28 @@ namespace NETPython
       }
 
       return "";
+    }
+
+    private void ShutdownPy()
+    {
+      if (PythonEngine.IsInitialized)
+      {
+        try
+        {
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
+          Py.GIL();
+          PythonEngine.Shutdown();
+          // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
+        }
+        catch (PlatformNotSupportedException)
+        {
+          // Ignore the exception as the shutdown likely proceeded enough
+        }
+        catch (PythonException)
+        {
+
+        }
+      }
     }
 
     protected virtual void Dispose(bool disposing)
