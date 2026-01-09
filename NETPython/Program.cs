@@ -33,7 +33,7 @@ namespace NETPython
         }
       }
 
-      Console.ReadKey();
+      // Console.ReadKey();
     }
   }
 }

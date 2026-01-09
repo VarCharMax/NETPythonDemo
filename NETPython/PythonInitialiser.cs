@@ -192,7 +192,17 @@ namespace NETPython
 
         // Extract major and minor version (e.g., "3.11" from "3.11.4"),
         // remove the dot for dll naming.
-        string pyVersion = config["version"][..config["version"].LastIndexOf('.')];
+        // virtualenv manager has different keys and values to venv.
+        string? versionKey = config.Keys.FirstOrDefault(k => k.StartsWith("version"));
+
+        if (string.IsNullOrEmpty(versionKey))
+        {
+          return "Python version not found in config.";
+        }
+
+        int versionBuild = config[versionKey].IndexOf('.');
+
+        string pyVersion = config[versionKey][..config[versionKey].IndexOf('.', versionBuild + 1)];
 
         if (String.Compare(pynetminversion, pyVersion, StringComparison.OrdinalIgnoreCase) < 0
           || String.Compare(pyVersion, pynetmaxversion, StringComparison.OrdinalIgnoreCase) > 0)

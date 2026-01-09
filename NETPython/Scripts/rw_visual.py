@@ -72,4 +72,5 @@ if __name__ == "__main__":
         SAVE_PATH = "C:\\tmp\\"
     if sys.platform in ["darwin"]:  # Mac OS
         SAVE_PATH = "/Users/rohanparkes/tmp/"
+
     create_plot(5, SAVE_PATH)
