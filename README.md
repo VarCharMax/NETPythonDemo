@@ -18,12 +18,14 @@ it caused an untrappable memory corruption exception in Core 8.)
 Particularly problematic was getting modules to load from a .venv virtual environment.
 None of the recommended approaches in forum posts worked. I eventually found a solution.
 
+Additionaly, it runs the activate and deactivate scripts, modified to conform to the ve bin folder structure.
+
 I should have guessed that there was trouble in paradise on account of the paucity of
 information and demo code on the pythonNET site.
 
 The aim in making the Python component self-maintaining is to intelligently parse the
 Python environment .venv config file to loate the correct references for the Python
-library. Exaclty how this is done depends on how the Python runtimes were installed. It
+library. Exactly how this is done depends on how the Python runtimes were installed. It
 has to be consistent for it to be automatically upgradable. For Windows, I used the
 provided installers. For Mac OS, I might have used Homebrew, but I'm not entirely sure -
 possibly I used a different utility which in turn used brew. But the important thing is
@@ -32,4 +34,6 @@ a demo of how you can make a cross-platform .NET-to-Python implementation.
 
 TODO
 
-Write Grunt file to copy Python into virtual environment. The venv utility only copies the exe runtime. We need the dll runtime in order to support pythonnet. However, this requires more support files - specifically, the DLLs, Lib, and tcl folders - to be copied into it. Additionaly, run the activate and deactivate scripts, modified to conform to the ve folder structure.
+Write Grunt file to copy Python into virtual environment. The venv utility only copies the exe runtime. We need the dll runtime in order to support pythonnet. However, this requires more support files - specifically, the DLLs, Lib, and tcl folders - to be copied into it.
+
+build - automate by copying \*.dll, \*.bat, all folders under .venv/Scripts, to output.
