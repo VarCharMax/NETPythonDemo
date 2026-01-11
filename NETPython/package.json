@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "grunt-contrib-copy": "^1.0.0"
+  }
+}

@@ -9,7 +9,9 @@ namespace NETPython
     private readonly string pynetmaxversion = $"{PythonEngine.MaxSupportedVersion.Major}.{PythonEngine.MaxSupportedVersion.Minor}";
     private readonly string pynetminversion = $"{PythonEngine.MinSupportedVersion.Major}.{PythonEngine.MinSupportedVersion.Minor}";
     private readonly OperatingSystem os = OperatingSystemHelper.CheckPlatform();
+    private string? _virtualEnvPath;
     private bool disposedValue;
+    private static readonly char[] separator = ['='];
 
     public string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
     {
@@ -22,7 +24,8 @@ namespace NETPython
 
       if (!string.IsNullOrEmpty(virtualEnvPath))
       {
-        message = InitialiseVirtual(virtualEnvPath, subFolder);
+        _virtualEnvPath = virtualEnvPath;
+        message = InitialiseVirtual(subFolder);
       }
       else
       {
@@ -171,11 +174,112 @@ namespace NETPython
       return "";
     }
 
-    private string InitialiseVirtual(string virtualEnvPath, string? scriptsFolder)
+    private string DeactivateVirtualEnvironment()
     {
-      if (!string.IsNullOrEmpty(virtualEnvPath))
+      var envVars = ExecuteBatchAndCaptureEnvVars(Path.Combine(_virtualEnvPath!, "Scripts", "deactivate.bat"));
+
+      foreach (var kvp in envVars)
       {
-        string pathToVirtualEnv = Path.Combine(virtualEnvPath, "pyvenv.cfg");
+        Environment.SetEnvironmentVariable(kvp.Key, kvp.Value, EnvironmentVariableTarget.Process);
+        Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+      }
+
+      return String.Empty;
+    }
+
+    private string EnsureVirtualEnvironment(string dllSystemPath, out string strDllDest)
+    {
+      string strDll = dllSystemPath[(dllSystemPath.LastIndexOf('\\') + 1)..];
+      strDllDest = Path.Combine(_virtualEnvPath!, "Scripts", strDll);
+    
+      if (File.Exists(strDllDest) == false)
+      {
+        return $"Python dll not found at {strDllDest}.";
+      }
+
+      var envVars = ExecuteBatchAndCaptureEnvVars(Path.Combine(_virtualEnvPath!, "Scripts", "activate.bat"));
+
+      if (envVars.ContainsKey("Path") == false)
+      {
+        return "PATH env variable not found.";
+      }
+
+      var paths = envVars["Path"].Split(';');
+
+      var venvPathIndex = Array.FindIndex(paths, el => el.Contains(".venv"));
+
+      if (venvPathIndex == -1)
+      {
+        return "PATH env missing Python setting.";
+      }
+
+      paths[venvPathIndex] = @$"{_virtualEnvPath}\Scripts";
+
+      envVars["Path"] = String.Join(';', paths);
+
+      foreach (var kvp in envVars)
+      {
+        // Set the captured variables in the current process if needed
+        Environment.SetEnvironmentVariable(kvp.Key, kvp.Value, EnvironmentVariableTarget.Process);
+        Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+      }
+
+      return "";
+    }
+
+    private static Dictionary<string, string> ExecuteBatchAndCaptureEnvVars(string batchFilePath)
+    {
+      var envVars = new Dictionary<string, string>();
+
+      var startInfo = new ProcessStartInfo
+      {
+        FileName = "cmd.exe",
+        Arguments = $"/c \"{batchFilePath}\"", // /c runs the command and then terminates
+        RedirectStandardOutput = true,
+        UseShellExecute = false, // Required for redirection
+        CreateNoWindow = true    // Hides the console window
+      };
+
+      using (var process = Process.Start(startInfo))
+      {
+        if (process == null) return envVars;
+        bool captureMode = false;
+
+        // Synchronously read the standard output
+        using (StreamReader reader = process.StandardOutput)
+        {
+          string line;
+          while ((line = reader.ReadLine()!) != null)
+          {
+            if (captureMode && line.Contains("---ENV-VARS-START---"))
+            {
+              captureMode = true;
+              continue;
+            }
+
+            if (line.Contains('='))
+            {
+              var parts = line.Split(separator, 2);
+              if (parts.Length == 2)
+              {
+                envVars[parts[0]] = parts[1];
+              }
+            }
+          }
+        }
+
+        process.WaitForExit();
+      }
+
+      return envVars;
+    }
+
+
+    private string InitialiseVirtual(string? scriptsFolder)
+    {
+      if (!string.IsNullOrEmpty(_virtualEnvPath))
+      {
+        string pathToVirtualEnv = Path.Combine(_virtualEnvPath, "pyvenv.cfg");
 
         if (File.Exists(pathToVirtualEnv) == false)
         {
@@ -211,16 +315,17 @@ namespace NETPython
           return $"Compatible Python version between {pynetminversion} and {pynetmaxversion} either not installed or not configured";
         }
 
-        string pythonDll = "";
+        string pythonSystemDll = string.Empty;
+        string pythonVeDll = "";
         string macosShim = "";
 
         switch (os)
         {
           case OperatingSystem.Windows:
-            pythonDll = Path.Combine(config["home"], $"python{pyVersion.Replace(".", "")}.dll");
+            pythonSystemDll = Path.Combine(config["home"], $"python{pyVersion.Replace(".", "")}.dll");
             break;
           case OperatingSystem.MacOS:
-            pythonDll = config["executable"];
+            pythonVeDll = config["executable"];
             // On macOS, we need to use a shim to load the Python environment modules.
             // This is because the folder structure is different from Windows.
             macosShim = $"python{pyVersion[..'.']}/";
@@ -232,9 +337,22 @@ namespace NETPython
               return "Unknown operating system";
         }
 
-        Runtime.PythonDLL = pythonDll;
+        if (string.IsNullOrEmpty(pythonSystemDll) == true)
+        {
+          return "Unable to locate Python Dll in Virtual Environment.";
+        }
 
-        string message = InitializePythonEngine();
+        string message = EnsureVirtualEnvironment(pythonSystemDll, out pythonVeDll);
+
+        if (string.IsNullOrEmpty(message) == false)
+        {
+          return message;
+        }
+
+        Runtime.PythonDLL = pythonVeDll;
+
+        message = InitializePythonEngine();
+
         if (!string.IsNullOrEmpty(message))
         {
           return message;
@@ -270,6 +388,13 @@ namespace NETPython
         catch (PythonException)
         {
 
+        }
+        finally
+        {
+          if (String.IsNullOrEmpty(_virtualEnvPath) != false)
+          {
+            DeactivateVirtualEnvironment();
+          }
         }
       }
     }
