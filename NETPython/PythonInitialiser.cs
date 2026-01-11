@@ -181,7 +181,7 @@ namespace NETPython
       foreach (var kvp in envVars)
       {
         Environment.SetEnvironmentVariable(kvp.Key, kvp.Value, EnvironmentVariableTarget.Process);
-        Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+        // Console.WriteLine($"{kvp.Key} = {kvp.Value}");
       }
 
       return String.Empty;
@@ -221,7 +221,7 @@ namespace NETPython
       {
         // Set the captured variables in the current process if needed
         Environment.SetEnvironmentVariable(kvp.Key, kvp.Value, EnvironmentVariableTarget.Process);
-        Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+        // Console.WriteLine($"{kvp.Key} = {kvp.Value}");
       }
 
       return "";
