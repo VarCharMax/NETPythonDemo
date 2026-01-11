@@ -302,7 +302,7 @@ namespace NETPython
         {
           return "Python version not found in config.";
         }
-
+          
         int versionBuild = config[versionKey].IndexOf('.');
 
         string pyVersion = config[versionKey][..config[versionKey].IndexOf('.', versionBuild + 1)];

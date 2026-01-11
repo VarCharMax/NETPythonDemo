@@ -1,8 +1,9 @@
-﻿/// <binding BeforeBuild='default' />
+﻿/// <binding BeforeBuild='default, copy' />
 module.exports = function (grunt) {
-  let dest = 'Scripts/.venv/Scripts';
+  const dest = 'Scripts/.venv/Scripts';
   const configPath = 'Scripts/.venv/pyvenv.cfg';
   const configDic = {};
+  let dllVersion = '';
 
   function extractPyVersion(pver) {
     let versionBuild = pver.indexOf('.');
@@ -11,6 +12,21 @@ module.exports = function (grunt) {
       .replace('.', '');
     return pyVersion;
   }
+
+  grunt.initConfig({
+    copy: {
+      main: {
+        files: [
+          {
+            expand: true, // Enables dynamic file mapping
+            cwd: configDic['home'], // The source file directory (relative to Gruntfile.js)
+            src: [dllVersion], // Copy all files and subfolders from the cwd
+            dest: dest, // The destination directory
+          },
+        ],
+      },
+    },
+  });
 
   grunt.registerTask(
     'getVEConfig',
@@ -51,13 +67,16 @@ module.exports = function (grunt) {
           configDic[key] = value;
         }
       }
-      console.log(`dict = ${configDic['version']}`);
-      console.log(`version = ${extractPyVersion(configDic['version'])}`);
+
+      dllVersion = `python${extractPyVersion(configDic['version'])}.dll`;
+
+      // console.log(`dict = ${configDic['version']}`);
+      console.log(`version = ${dllVersion}`);
     }
   );
 
   // Load the plugin that provides the "copy" task.
-  // grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Define default task that runs the operation(s)
   grunt.registerTask('default', ['getVEConfig']);
