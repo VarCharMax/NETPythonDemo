@@ -274,7 +274,6 @@ namespace NETPython
       return envVars;
     }
 
-
     private string InitialiseVirtual(string? scriptsFolder)
     {
       if (!string.IsNullOrEmpty(_virtualEnvPath))
