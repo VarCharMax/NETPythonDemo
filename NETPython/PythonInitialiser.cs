@@ -376,7 +376,7 @@ namespace NETPython
         try
         {
           // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true); // No longer works in .NET 8+
-          Py.GIL();
+          using (Py.GIL())
           PythonEngine.Shutdown();
           // AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false); // Causes a corrupted memory exxception.
         }
