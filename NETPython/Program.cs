@@ -13,13 +13,13 @@ namespace NETPython
 
       Option<string> outputpathOption = new("--output", "-o")
       {
-        Description = "An option whose argument is parsed as a string",
+        Description = "Output path",
         DefaultValueFactory = parseResult => @"C:\tmp",
       };
 
       Option<int> countOption = new("--delay", "-d")
       {
-        Description = "An option whose argument is parsed as an int",
+        Description = "Requested number of files.",
         DefaultValueFactory = parseResult => 5,
       };
 
