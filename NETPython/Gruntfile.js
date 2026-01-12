@@ -14,10 +14,9 @@ module.exports = function (grunt) {
   }
 
   grunt.initConfig({
-
     project: {
       dll: dllVersion,
-      source: src
+      source: src,
     },
 
     copy: {
@@ -26,7 +25,8 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: '<%= src %>/',
-            src: ['**',
+            src: [
+              '**',
               '!*.dll',
               '!*.exe',
               '!*.json',
@@ -88,15 +88,9 @@ module.exports = function (grunt) {
 
       grunt.config.set('src', src);
       grunt.config.set('dll', dllVersion);
-
-      console.log(dllVersion);
-      console.log(src);
     }
   );
 
-  // Load the plugin that provides the "copy" task.
   grunt.loadNpmTasks('grunt-contrib-copy');
-
-  // Define default task that runs the operation(s)
   grunt.registerTask('default', ['getVEConfig', 'copy:main']);
 };
