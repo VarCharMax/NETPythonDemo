@@ -34,6 +34,4 @@ a demo of how you can make a cross-platform .NET-to-Python implementation.
 
 TODO
 
-- Write Grunt file to copy Python into virtual environment. The venv utility only copies the exe runtime. We need the dll runtime in order to support pythonnet. However, this requires more support files - specifically, the DLLs, Lib, and tcl folders - to be copied into it.
-
-- build config - automate by copying (only) `\*.dll`, `\*.bat`, all folders under `.venv/Scripts`, to output. (Maybe simplify by just excluding all `\*.exe`s?)
+- build config - automate by copying (only) `\*.dll`, `\*.bat`, all folders under `.venv/Scripts`, to output. (Maybe simplify by just excluding all `\*.exe`s?), to avoid copying everything including python exes that might pose a security risk.
