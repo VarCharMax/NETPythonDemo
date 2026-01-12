@@ -1,10 +1,9 @@
 ﻿/// <binding BeforeBuild='default' />
 module.exports = function (grunt) {
-  let src = '';
-  const dest = 'Scripts/.venv/Scripts/test/';
   const configPath = 'Scripts/.venv/pyvenv.cfg';
   const configDic = {};
   let dllVersion = '';
+  let src = '';
 
   function extractPyVersion(pver) {
     let versionBuild = pver.indexOf('.');
@@ -15,12 +14,18 @@ module.exports = function (grunt) {
   }
 
   grunt.initConfig({
+
+    project: {
+      dll: dllVersion,
+      source: src
+    },
+
     copy: {
       main: {
         files: [
           {
             expand: true,
-            cwd: 'C:/Users/rpark/AppData/Local/Python/pythoncore-3.13-64/',
+            cwd: '<%= src %>/',
             src: ['**',
               '!*.dll',
               '!*.exe',
@@ -30,9 +35,9 @@ module.exports = function (grunt) {
               '!**/Doc/**',
               '!**/include/**',
               '!**/Scripts/**',
-              'python313.dll',
+              '<%= dll %>',
             ],
-            dest: dest,
+            dest: 'Scripts/.venv/Scripts/',
           },
         ],
       },
@@ -80,6 +85,10 @@ module.exports = function (grunt) {
 
       src = configDic['home'].replaceAll('\\', '/') + '/';
       dllVersion = `python${extractPyVersion(configDic['version'])}.dll`;
+
+      grunt.config.set('src', src);
+      grunt.config.set('dll', dllVersion);
+
       console.log(dllVersion);
       console.log(src);
     }
