@@ -1,4 +1,4 @@
-﻿/// <binding BeforeBuild='default' />
+/// <binding ProjectOpened='default' />
 module.exports = function (grunt) {
   const configPath = 'Scripts/.venv/pyvenv.cfg';
   const configDic = {};
@@ -14,11 +14,6 @@ module.exports = function (grunt) {
   }
 
   grunt.initConfig({
-    project: {
-      dll: dllVersion,
-      source: src,
-    },
-
     copy: {
       main: {
         files: [
