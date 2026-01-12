@@ -48,8 +48,6 @@ namespace NETPython
 
         using (Py.GIL())
         {
-          
-
           try
           {
             dynamic module = Py.Import("rw_visual");
@@ -73,12 +71,6 @@ namespace NETPython
         Console.Error.WriteLine(parseError.Message);
       }
       return;
-
-      
-
-     
-
-      // Console.ReadKey();
     }
   }
 }
