@@ -31,7 +31,3 @@ provided installers. For Mac OS, I might have used Homebrew, but I'm not entirel
 possibly I used a different utility which in turn used brew. But the important thing is
 to keep track of the process and always do it the same way. At the moment, this is just
 a demo of how you can make a cross-platform .NET-to-Python implementation.
-
-TODO
-
-- build config - automate by copying (only) `\*.dll`, `\*.bat`, all folders under `.venv/Scripts`, to output. (Maybe simplify by just excluding all `\*.exe`s?), to avoid copying everything including python exes that might pose a security risk.
