@@ -79,7 +79,11 @@ module.exports = function (grunt) {
       }
 
       src = configDic['home'].replaceAll('\\', '/') + '/';
-      dllVersion = `python${extractPyVersion(configDic['version'])}.dll`;
+
+      let keys = Object.keys(configDic);
+      let vKey = keys.find(t => t.startsWith('version'));
+
+      dllVersion = `python${extractPyVersion(configDic[vKey])}.dll`;
 
       grunt.config.set('src', src);
       grunt.config.set('dll', dllVersion);
