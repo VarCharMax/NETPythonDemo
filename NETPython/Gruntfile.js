@@ -22,10 +22,7 @@ module.exports = function (grunt) {
             cwd: '<%= src %>/',
             src: [
               '**',
-              '!*.dll',
-              '!*.exe',
-              '!*.json',
-              '!*.txt',
+              '!*.*',
               '!**/libs/**',
               '!**/Doc/**',
               '!**/include/**',
