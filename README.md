@@ -1,33 +1,19 @@
 # README
 
-As I'd been going back to study Python, I thought the next step was to integrate it
-with .NET.
+The aim of this project is to provide a manager class for pythonnet.
 
-You know, functional programming ... A scripting language seemed the best way to
-implement this. You can do functional programming in .NET, but it has to be done in the
-context of an object, so ...
+It has two main aims:
 
-As Python is one of the most widely used languages, I assumed support for integration
-with .NET would be mature by now. Unfortunately, it isn't, and I'm not sure I'd recommend
-using it in production, especially in Core 9+, as it isn't fully compatible. The mandatory
-ShutDown() method has a dependency on BinaryFormatter, which has been removed from the
-platform. The only practical option is to trap an exception and hope for the best. (There
-was a work-around, but it no longer works. I have kept a reference to it in the code but
-it caused an untrappable memory corruption exception in Core 8.)
+- Take care of the initiaisation of the pythonet envirnment.
+- Make pythonnet compatible with Python virtual environments.
 
-Particularly problematic was getting modules to load from a .venv virtual environment.
-None of the recommended approaches in forum posts worked. I eventually found a solution.
+Additionally, it addresses a deficiency in Python virtual environment utilies such as venv, which cache the specified Python runtime exe, but do not cache the dll runtime.
 
-Additionaly, it runs the activate and deactivate scripts, modified to conform to the ve bin folder structure.
+The Initialiser can run in two modes:
 
-I should have guessed that there was trouble in paradise on account of the paucity of
-information and demo code on the pythonNET site.
+- default - it locates and assigns the highest operating system-wide Python installation that is compatible with pythonnet, using techniques specific to each operating system.
+- ve - it locates and caches the specified Python dll version. It updates filepaths, and also runs the associated activate and deactivate batch files.
 
-The aim in making the Python component self-maintaining is to intelligently parse the
-Python environment .venv config file to loate the correct references for the Python
-library. Exactly how this is done depends on how the Python runtimes were installed. It
-has to be consistent for it to be automatically upgradable. For Windows, I used the
-provided installers. For Mac OS, I might have used Homebrew, but I'm not entirely sure -
-possibly I used a different utility which in turn used brew. But the important thing is
-to keep track of the process and always do it the same way. At the moment, this is just
-a demo of how you can make a cross-platform .NET-to-Python implementation.
+In both cases, it verifies that the specified Python version is compatible with the pythonnet library.
+
+The copying and caching is performed by a Grunt file. This can be set to run according to specified triggers, or simply run once when the project is being created, as per the venv utility.

@@ -1,4 +1,4 @@
-/// <binding ProjectOpened='default' />
+/// <binding />
 module.exports = function (grunt) {
   const configPath = 'Scripts/.venv/pyvenv.cfg';
   const configDic = {};
