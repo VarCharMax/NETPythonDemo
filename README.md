@@ -12,7 +12,7 @@ Additionally, it addresses a deficiency in Python virtual environment utilies su
 The Initialiser can run in two modes:
 
 - default - it locates and assigns the highest system-wide Python installation that is compatible with pythonnet, using techniques specific to each operating system.
-- ve - it locates and caches the specified Python dll version according to the ve configuration file. It updates filepaths, and also runs the associated activate and deactivate batch files.
+- ve - it locates and caches the specified system Python dll version according to the ve configuration file. It updates filepaths, and also runs (and edits) the associated activate and deactivate batch files.
 
 In both cases, it verifies that the specified Python version is compatible with the pythonnet library.
 
