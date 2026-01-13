@@ -14,6 +14,6 @@ The Initialiser can run in two modes:
 - default - it locates and assigns the highest system-wide Python installation that is compatible with pythonnet, using techniques specific to each operating system.
 - ve - it locates and caches the specified system Python dll version according to the ve configuration file. It updates filepaths, and also runs (and edits) the associated activate and deactivate batch files.
 
-In both cases, it verifies that the specified Python version is compatible with the pythonnet library.
+In both cases, it verifies that the located or specified Python version is compatible with the pythonnet library.
 
 The copying and caching is performed by a Grunt file. This can be set to run according to specified triggers, or simply run once when the project is being created, as per the venv utility. Apart from the dll, it also copies specified folders that are necessary to support the dll runtime.
