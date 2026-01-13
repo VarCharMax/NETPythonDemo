@@ -13,6 +13,9 @@ namespace NETPython
     private bool disposedValue;
     private static readonly char[] separator = ['='];
 
+    public string PynetMaxVersion => pynetmaxversion;
+    public string PynetMinVersion => pynetminversion;
+
     public string InitialisePy(string? virtualEnvPath = null, string? subFolder = "Scripts")
     {
       if (PythonEngine.IsInitialized)
